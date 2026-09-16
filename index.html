@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SmartFood</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7f3;
+            color: #263238;
+        }
+
+        header {
+            background: #72b45a;
+            color: white;
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h2 {
+            margin: 0;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: #e8f4e1;
+        }
+
+        .hero h1 {
+            font-size: 40px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 40px auto;
+        }
+
+        .section {
+            background: white;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 15px;
+            box-shadow: 0 3px 10px #ddd;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            border: none;
+            background: #72b45a;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #5d9d47;
+        }
+
+        .delete {
+            background: #e74c3c;
+        }
+
+        .edit {
+            background: #f0a500;
+        }
+
+        .ingredient {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #edf7e9;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 10px;
+        }
+
+        .ingredient-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .recipes {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .recipe {
+            background: #fff8e8;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .shopping-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .empty {
+            color: #777;
+        }
+
+        footer {
+            background: #263238;
+            color: white;
+            text-align: center;
+            padding: 25px;
+        }
+
+        @media(max-width:700px) {
+            .recipes {
+                grid-template-columns: 1fr;
+            }
+
+            .input-area {
+                flex-direction: column;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav a {
+                margin: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h2>🥗 SmartFood</h2>
+
+    <nav>
+        <a href="#home">Գլխավոր</a>
+        <a href="#recipes">Ուտեստներ</a>
+        <a href="#shopping">Գնումներ</a>
+    </nav>
+</header>
+
+
+<section class="hero" id="home">
+
+    <h1>Ի՞նչ պատրաստել այսօր։ 🍳</h1>
+
+    <p>
+        Գրիր տանը եղած մթերքները և գտիր՝ ինչ կարող ես պատրաստել։
+    </p>
+
+</section>
+
+
+<div class="container">
+    <!-- ՏԱՆ ՄԹԵՐՔՆԵՐ -->
+    <div class="section">
+
+        <h2>🏠 Տանը եղած մթերքներ</h2>
+
+        <div class="input-area">
+
+            <input
+                    type="text"
+                    id="foodInput"
+                    placeholder="Օրինակ՝ ձու"
+            >
+
+            <button onclick="addFood()">
+                ➕ Ավելացնել
+            </button>
+            <button onclick="findRecipes()">
+                🔎 Գտնել
+            </button>
+
+        </div>
+
+        <div id="ingredients"></div>
+
+    </div>
+
+
+    <!-- ՈՒՏԵՍՏՆԵՐ -->
+    <div class="section" id="recipes">
+
+        <h2>🍽️ Ինչ կարող ես պատրաստել</h2>
+
+        <div class="recipes" id="recipeList">
+
+            <p class="empty">
+                Ավելացրու տանը եղած մթերքները,
+                հետո սեղմիր «Գտնել»։
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+
+
+    <!-- ԳՆՈՒՄՆԵՐ -->
+    <div class="section" id="shopping">
+
+        <h2>🛒 Գնումների ցուցակ</h2>
+
+        <div class="input-area">
+
+            <input
+                    type="text"
+                    id="shoppingInput"
+                    placeholder="Ի՞նչ է պետք գնել"
+            >
+
+            <button onclick="addShoppingFromInput()">
+                ➕ Ավելացնել
+            </button>
+
+        </div>
+
+        <br>
+
+        <div id="shoppingList"></div>
+
+    </div>
+
+</div>
+
+
+<footer>
+
+    <p>MySmartKitchen © 2026</p>
+
+    <p>
+        Խնայիր ժամանակդ • Խնայիր գումարդ • Մի վատնիր մթերքը
+    </p>
+
+</footer>
+
+
+<script>
+
+    let foods =
+        JSON.parse(localStorage.getItem("foods")) || [];
+
+    let shopping =
+        JSON.parse(localStorage.getItem("shopping")) || [];
+
+
+    // ---------------- ՏԱՆ ՄԹԵՐՔՆԵՐ ----------------
+
+    function showFoods() {
+
+        let container =
+            document.getElementById("ingredients");
+
+        container.innerHTML = "";
+
+        if (foods.length == 0) {
+
+            container.innerHTML =
+                "<p class='empty'>Դեռ մթերք չունես ավելացրած։</p>";
+
+            return;
+        }
+
+        for (let i = 0; i < foods.length; i++) {
+
+            container.innerHTML += `
+
+                <div class="ingredient">
+
+                    <span>🥕 ${foods[i]}</span>
+
+                    <div class="ingredient-buttons">
+
+                        <button
+                            class="edit"
+                            onclick="editFood(${i})">
+                            ✏️
+                        </button>
+
+                        <button
+                            class="delete"
+                            onclick="deleteFood(${i})">
+                            ❌
+                        </button>
+
+                    </div>
+
+                </div>
+            `;
+        }
+    }
+
+
+    function addFood() {
+
+        let input =
+            document.getElementById("foodInput");
+
+        let food =
+            input.value.trim();
+
+        if (food == "") {
+            return;
+        }
+
+        foods.push(food);
+
+        localStorage.setItem(
+            "foods",
+            JSON.stringify(foods)
+        );
+
+        input.value = "";
+
+        showFoods();
+    }
+
+
+    function deleteFood(index) {
+
+        foods.splice(index, 1);
+
+        localStorage.setItem(
+            "foods",
+            JSON.stringify(foods)
+        );
+
+        showFoods();
+    }
+
+
+    function editFood(index) {
+
+        let newFood =
+            prompt(
+                "Փոխիր մթերքի անունը:",
+                foods[index]
+            );
+
+        if (
+            newFood != null &&
+            newFood.trim() != ""
+        ) {
+
+            foods[index] =
+                newFood.trim();
+
+            localStorage.setItem(
+                "foods",
+                JSON.stringify(foods)
+            );
+
+            showFoods();
+        }
+    }
+
+
+    // ---------------- ՈՒՏԵՍՏՆԵՐ ----------------
+
+    function findRecipes() {
+
+        let recipeList =
+            document.getElementById("recipeList");
+
+        recipeList.innerHTML = "";
+
+        let found = 0;
+
+
+        // Ձվածեղ
+
+        if (
+            foods.includes("ձու") ||
+            foods.includes("Ձու")
+        ) {
+
+            recipeList.innerHTML += `
+
+                <div class="recipe">
+
+                    <h3>🍳 Ձվածեղ</h3>
+
+                    <p>
+                        Ձու + պանիր + բանջարեղեն
+                    </p>
+
+                    <button
+                        onclick="addShopping('Պանիր')">
+
+                        🛒 Ավելացնել պանիր
+
+                    </button>
+
+                </div>
+            `;
+
+            found++;
+        }
+
+
+        // Աղցան
+
+        if (
+            foods.includes("լոլիկ") ||
+            foods.includes("Լոլիկ")
+        ) {
+
+            recipeList.innerHTML += `
+
+                <div class="recipe">
+
+                    <h3>🥗 Աղցան</h3>
+
+                    <p>
+                        Լոլիկ + վարունգ + պանիր
+                    </p>
+
+                    <button
+                        onclick="addShopping('Վարունգ')">
+
+                        🛒 Ավելացնել վարունգ
+
+                    </button>
+
+                </div>
+            `;
+
+            found++;
+        }
+
+
+        // Բրնձով հավ
+
+        if (
+            foods.includes("բրինձ") ||
+            foods.includes("Բրինձ")
+        ) {
+
+            recipeList.innerHTML += `
+
+                <div class="recipe">
+
+                    <h3>🍚 Բրնձով հավ</h3>
+
+                    <p>
+                        Բրինձ + հավ + բանջարեղեն
+                    </p>
+
+                    <button
+                        onclick="addShopping('Հավ')">
+
+                        🛒 Ավելացնել հավ
+
+                    </button>
+
+                </div>
+            `;
+
+            found++;
+        }
+
+
+        if (found == 0) {
+
+            recipeList.innerHTML = `
+
+                <p class="empty">
+
+                    😔 Այս մթերքներով դեռ
+                    ուտեստ չգտանք։
+
+                    <br><br>
+
+                    Փորձիր ավելացնել՝
+                    <b>ձու</b>, <b>լոլիկ</b>
+                    կամ <b>բրինձ</b>։
+
+                </p>
+            `;
+        }
+    }
+
+
+    // ---------------- ԳՆՈՒՄՆԵՐ ----------------
+
+    function showShopping() {
+
+        let container =
+            document.getElementById("shoppingList");
+
+        container.innerHTML = "";
+
+        if (shopping.length == 0) {
+
+            container.innerHTML =
+                "<p class='empty'>Գնումների ցուցակը դատարկ է։</p>";
+
+            return;
+        }
+
+        for (let i = 0; i < shopping.length; i++) {
+
+            container.innerHTML += `
+
+                <div class="shopping-item">
+
+                    <input
+                        value="${shopping[i]}"
+                        onchange="
+                        editShopping(${i}, this.value)
+                        "
+                    >
+
+                    <button
+                        class="delete"
+                        onclick="
+                        deleteShopping(${i})
+                        ">
+
+                        ❌
+
+                    </button>
+
+                </div>
+            `;
+        }
+    }
+
+
+    function addShopping(food) {
+
+        shopping.push(food);
+
+        localStorage.setItem(
+            "shopping",
+            JSON.stringify(shopping)
+        );
+
+        showShopping();
+
+        alert(
+            food +
+            " ավելացվեց գնումների ցուցակին 🛒"
+        );
+    }
+
+
+    function addShoppingFromInput() {
+
+        let input =
+            document.getElementById("shoppingInput");
+
+        let food =
+            input.value.trim();
+
+        if (food == "") {
+            return;
+        }
+
+        shopping.push(food);
+
+        localStorage.setItem(
+            "shopping",
+            JSON.stringify(shopping)
+        );
+
+        input.value = "";
+
+        showShopping();
+    }
+
+
+    function editShopping(index, value) {
+
+        if (value.trim() == "") {
+            return;
+        }
+
+        shopping[index] =
+            value.trim();
+
+        localStorage.setItem(
+            "shopping",
+            JSON.stringify(shopping)
+        );
+    }
+
+
+    function deleteShopping(index) {
+
+        shopping.splice(index, 1);
+
+        localStorage.setItem(
+            "shopping",
+            JSON.stringify(shopping)
+        );
+
+        showShopping();
+    }
+
+
+    // Սկզբնական ցուցադրում
+
+    showShopping();
+    showFoods();
+
+</script>
+
+</body>
+</html>

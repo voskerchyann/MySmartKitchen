@@ -187,6 +187,7 @@
 
 
 <div class="container">
+
     <!-- ՏԱՆ ՄԹԵՐՔՆԵՐ -->
     <div class="section">
 
@@ -203,6 +204,7 @@
             <button onclick="addFood()">
                 ➕ Ավելացնել
             </button>
+
             <button onclick="findRecipes()">
                 🔎 Գտնել
             </button>
@@ -229,9 +231,6 @@
         </div>
 
     </div>
-
-
-
 
 
     <!-- ԳՆՈՒՄՆԵՐ -->
@@ -282,6 +281,18 @@
         JSON.parse(localStorage.getItem("shopping")) || [];
 
 
+    // ---------------- ԿԱԼՈՐԻԱՆԵՐ ----------------
+
+    let calories = {
+        "ձու": 70,
+        "լոլիկ": 18,
+        "բրինձ": 130,
+        "պանիր": 350,
+        "վարունգ": 15,
+        "հավ": 165
+    };
+
+
     // ---------------- ՏԱՆ ՄԹԵՐՔՆԵՐ ----------------
 
     function showFoods() {
@@ -326,6 +337,34 @@
                 </div>
             `;
         }
+
+
+        // ---------------- ԸՆԴՀԱՆՈՒՐ ԿԱԼՈՐԻԱՆԵՐ ----------------
+
+        let totalCalories = 0;
+
+        for (let i = 0; i < foods.length; i++) {
+
+            let food =
+                foods[i].toLowerCase();
+
+            if (calories[food]) {
+
+                totalCalories += calories[food];
+
+            }
+        }
+
+        container.innerHTML += `
+
+            <p>
+                <b>
+                    🔥 Ընդհանուր կալորիաներ՝
+                    ${totalCalories} կկալ
+                </b>
+            </p>
+
+        `;
     }
 
 
